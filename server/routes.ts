@@ -217,6 +217,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Generate standalone cover letter
+  app.post("/api/generate-cover-letter", async (req, res) => {
+    try {
+      const { companyName, roleTitle, jobDescription, candidateName, candidateEmail, candidatePhone, experience } = req.body;
+
+      if (!companyName || !roleTitle || !jobDescription || !candidateName || !candidateEmail || !experience) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
+      // Create a mock resume from the experience data
+      const mockResume = `${candidateName}
+${candidateEmail} | ${candidatePhone}
+
+EXPERIENCE & SKILLS:
+${experience}`;
+
+      const coverLetter = await generateCoverLetter(
+        mockResume,
+        jobDescription,
+        companyName,
+        roleTitle
+      );
+
+      res.json({ coverLetter });
+
+    } catch (error) {
+      console.error("Cover letter generation error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to generate cover letter" 
+      });
+    }
+  });
+
+  // Scan resume against job description (ATS Scanner)
+  app.post("/api/scan-resume", upload.single("resume"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No resume file uploaded" });
+      }
+
+      // Validate file size
+      if (!validateFileSize(req.file.size)) {
+        fs.unlinkSync(req.file.path);
+        return res.status(400).json({ message: "File size too large. Maximum size is 10MB." });
+      }
+
+      const { jobDescription } = req.body;
+      if (!jobDescription) {
+        fs.unlinkSync(req.file.path);
+        return res.status(400).json({ message: "Job description is required" });
+      }
+
+      // Parse resume file
+      const resumeText = await parseResumeFile(req.file.path, req.file.mimetype);
+
+      // Analyze resume with ATS
+      const analysis = await analyzeResumeATS(resumeText, jobDescription);
+
+      // Clean up uploaded file
+      fs.unlinkSync(req.file.path);
+
+      res.json(analysis);
+
+    } catch (error) {
+      // Clean up file if it exists
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      console.error("ATS scan error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to scan resume" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

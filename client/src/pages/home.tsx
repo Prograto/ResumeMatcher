@@ -7,9 +7,9 @@ import { ATSResults } from "@/components/ATSResults";
 import { KeywordAnalysis } from "@/components/KeywordAnalysis";
 import { Recommendations } from "@/components/Recommendations";
 import { DocumentPreview } from "@/components/DocumentPreview";
+import { Header } from "@/components/Header";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase } from "lucide-react";
 import type { JobDetails, OptimizationResult } from "@shared/schema";
 
 type Step = 1 | 2 | 3;
@@ -99,37 +99,7 @@ export function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-primary-700 flex items-center">
-                  <Briefcase className="mr-2 text-primary-500" />
-                  JobMatch Pro
-                </h1>
-              </div>
-              <nav className="hidden md:ml-10 md:flex space-x-8">
-                <a href="#" className="text-primary-600 hover:text-primary-700 px-3 py-2 text-sm font-medium">
-                  Optimize Resume
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">
-                  Cover Letters
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">
-                  ATS Scanner
-                </a>
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                Get Started
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -96,12 +96,32 @@ export async function optimizeResume(
   try {
     const systemPrompt = `You are an expert resume optimization specialist. Create an optimized version of the provided resume that:
 1. Strategically incorporates relevant keywords from the job description
-2. Highlights relevant experience and skills
-3. Uses action verbs and quantifiable achievements
-4. Maintains professional formatting and structure
-5. Maximizes ATS compatibility
+2. Highlights relevant experience and skills with quantifiable achievements
+3. Uses strong action verbs and professional language
+4. Maintains clean, professional formatting with clear sections
+5. Maximizes ATS compatibility with proper keyword density
+6. Follows this professional format structure:
 
-Return only the complete optimized resume text in a professional format.`;
+[CANDIDATE NAME]
+[Contact Information]
+
+PROFESSIONAL SUMMARY
+• Compelling 2-3 line summary targeting the specific role
+
+CORE COMPETENCIES
+• Key skills organized in a scannable format
+
+PROFESSIONAL EXPERIENCE
+[COMPANY NAME] | [DATES]
+[Job Title]
+• Achievement-focused bullet points with metrics
+• Action verbs and relevant keywords
+• Quantified results when possible
+
+EDUCATION
+[Degree] | [Institution] | [Year]
+
+Return only the complete optimized resume text with professional formatting.`;
 
     const prompt = `Company: ${companyName}
 Role: ${roleTitle}
@@ -112,7 +132,7 @@ ${jobDescription}
 Original Resume:
 ${originalResumeText}
 
-Please optimize this resume for the above position.`;
+Please optimize this resume for the above position with professional formatting and clear sections.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-pro",
@@ -151,9 +171,16 @@ export async function generateCoverLetter(
 2. Connects the candidate's experience to job requirements
 3. Highlights relevant achievements from the resume
 4. Maintains a professional yet engaging tone
-5. Follows proper business letter format
+5. Follows proper business letter format with sections:
+   - Header with contact information
+   - Date and employer address
+   - Professional salutation
+   - Opening paragraph expressing interest
+   - Body paragraphs connecting experience to role
+   - Closing paragraph with call to action
+   - Professional sign-off
 
-Return only the complete cover letter text.`;
+Return only the complete cover letter text with proper formatting.`;
 
     const prompt = `Company: ${companyName}
 Role: ${roleTitle}
@@ -161,10 +188,10 @@ Role: ${roleTitle}
 Job Description:
 ${jobDescription}
 
-Candidate's Resume:
+Candidate's Resume/Experience:
 ${resumeText}
 
-Please write a compelling cover letter for this application.`;
+Please write a compelling, well-formatted cover letter for this application.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-pro",
