@@ -1,0 +1,62 @@
+Create a full-stack web application designed to assist job seekers in optimizing their resumes and cover letters for specific job applications, with features similar to Jobscan.co.
+
+**Application Name:** JobMatch Pro (or similar, feel free to suggest a better one)
+
+**Core Functionality Requirements:**
+
+1.  **Input Interface:**
+    * **Resume Upload:** Provide an intuitive interface for the user to upload their complete resume file (e.g., supporting `.pdf`, `.docx` formats). This will be considered the "Original Resume."
+    * **Job Description Input:** A large text area for the user to paste the full job description.
+    * **Job Details:** Separate input fields for "Company Name" and "Role Title".
+
+2.  **Resume Generation & Optimization Engine:**
+    * **Intelligent Resume Tailoring:** Based on the uploaded "Original Resume" (as the candidate's base information), the provided job description, company name, and role title, generate a *new, highly optimized resume*. We'll call this the "Generated Resume."
+    * **ATS Shortlist Focus:** The "Generated Resume" should be structured and worded to maximize its chances of passing Applicant Tracking Systems (ATS) and getting shortlisted by recruiters.
+    * **Skill Integration:** Analyze the job description to identify key skills (hard and soft). Strategically integrate these skills into the "Generated Resume," ensuring they are naturally woven into experience bullet points and skill sections, avoiding simple keyword stuffing. Prioritize skills mentioned multiple times or explicitly stated as "required."
+    * **Quantifiable Achievements:** Encourage the generation of bullet points that highlight quantifiable achievements and impact, drawing from the "Original Resume"'s content.
+
+3.  **Cover Letter Generation Engine:**
+    * **Personalized Cover Letter:** Generate a professional and personalized cover letter.
+    * **Content Source:** The cover letter should leverage information from the job description (company, role, key requirements), and the candidate's "Original Resume" (skills, experience highlights) to create a compelling narrative.
+    * **Structure:** Include standard cover letter sections: introduction (stating interest), body paragraphs (connecting skills/experience to job requirements), and a professional closing.
+
+4.  **ATS Optimization & Scanning Features (Jobscan.co-like Analytics with ATS Score):**
+    * **Central Function: ATS Score & Match Analysis:**
+        * The system must perform a robust comparison between a chosen resume and the job description to provide an "ATS Score" (also referred to as "Match Rate"). This score quantifies how well the resume aligns with the job requirements.
+        * **Option 1: Scan Original Resume:** Allow the user to perform an ATS scan of their **uploaded "Original Resume"** against the provided job description. Display the calculated ATS Score prominently.
+        * **Option 2: Scan Generated Resume:** Allow the user to perform an ATS scan of the **"Generated Resume"** against the provided job description. Display the calculated ATS Score prominently. This demonstrates the improvement.
+    * **Keyword Highlighting:** Visually highlight keywords, phrases, and skills from the job description that are present in the chosen resume, and clearly indicate those that are missing or under-emphasized.
+    * **Skill Breakdown:** Provide a detailed breakdown of hard and soft skills identified in both the job description and the chosen resume, showing overlaps and gaps.
+    * **Actionable Recommendations:** Offer concrete, actionable suggestions for improving the chosen resume's ATS compatibility and overall effectiveness (e.g., "Add 'Project Management' to your skills section," "Rephrase bullet point X to include 'Data Analysis'," "Consider adding a summary statement," "Ensure consistent date formatting").
+    * **Formatting Check:** Provide basic feedback on resume formatting elements that might affect ATS parsing (e.g., use of tables, images, non-standard fonts, headers/footers).
+
+**Technical Stack & Implementation Details:**
+
+* **Full-Stack Application:** Implement both a backend and a frontend.
+* **Backend (Python preferred):** Use a Python framework like Flask or FastAPI.
+    * Handle file uploads (resume, job description).
+    * Implement robust resume parsing (e.g., using libraries like `python-docx` for `.docx`, `PyPDF2` or similar for `.pdf` to extract text).
+    * **AI/LLM Integration: Utilize the Google Gemini API.**
+        * The application's intelligent components (generating/optimizing resumes, generating cover letters, performing keyword extraction, matching, and score calculation for ATS analysis) **must leverage the Google Gemini API.**
+        * **Ensure secure handling of the API key, preferably via Replit Secrets.**
+    * Implement the logic for calculating match rates/ATS Scores and generating recommendations based on the comparison.
+* **Frontend (React.js or HTML/CSS/JavaScript):**
+    * Create a clean, modern, and responsive user interface.
+    * Use Tailwind CSS for styling to ensure a polished look and mobile responsiveness.
+    * Display input forms, progress indicators during processing, and clear output sections for the generated resume, cover letter, and ATS scan results.
+    * Provide clear options for scanning either the "Original Resume" or the "Generated Resume."
+    * Present the ATS Score and analysis results in an easy-to-understand, visual format.
+    * Provide download options for the generated resume and cover letter.
+
+**User Experience (UX) Considerations:**
+
+* **Clear Workflow:** Guide the user through the steps: Upload Resume & Input Job Details -> Generate/Optimize -> View/Compare Results & ATS Scores.
+* **Loading States:** Display clear loading indicators when processing takes time (e.g., during resume/cover letter generation or ATS scanning).
+* **Error Handling:** Gracefully handle file upload errors, parsing issues, or API failures.
+* **Readability:** Ensure the generated resumes, cover letters, and ATS reports are easy to read and understand.
+
+**Deliverables:**
+
+* Complete, runnable full-stack application code within a single Replit project.
+* Clear comments throughout the code explaining logic and functionality.
+* A `README.md` (or similar) explaining how to run and use the application, including instructions on how to set up the Gemini API key in Replit Secrets.
