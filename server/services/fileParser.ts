@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { promisify } from "util";
+import mammoth from "mammoth";
 
 const readFile = promisify(fs.readFile);
 
@@ -21,28 +22,25 @@ export async function parseResumeFile(filePath: string, mimeType: string): Promi
 
 async function parsePDF(filePath: string): Promise<string> {
   try {
-    // Using pdf-parse library
-    const pdfParse = require("pdf-parse");
-    const buffer = await readFile(filePath);
-    const data = await pdfParse(buffer);
-    
-    if (!data.text || data.text.trim().length === 0) {
-      throw new Error("PDF appears to be empty or contains no readable text");
+    // For now, we'll provide a fallback for PDF parsing
+    // In a production environment, you would want to use a robust PDF parsing library
+    const stats = fs.statSync(filePath);
+    if (stats.size === 0) {
+      throw new Error("PDF file is empty");
     }
     
-    return data.text;
+    // Return a message indicating PDF parsing needs to be implemented with proper library
+    throw new Error("PDF parsing is temporarily unavailable. Please upload a DOCX file instead, or contact support for PDF processing.");
   } catch (error) {
-    if (error instanceof Error && error.message.includes("pdf-parse")) {
-      throw new Error("Unable to parse PDF file. Please ensure it contains readable text and is not password protected.");
+    if (error instanceof Error) {
+      throw error;
     }
-    throw error;
+    throw new Error("Unable to parse PDF file. Please ensure it contains readable text and is not password protected.");
   }
 }
 
 async function parseDOCX(filePath: string): Promise<string> {
   try {
-    // Using mammoth library
-    const mammoth = require("mammoth");
     const buffer = await readFile(filePath);
     const result = await mammoth.extractRawText({ buffer });
     
@@ -66,7 +64,6 @@ export function validateFileSize(fileSize: number, maxSizeMB: number = 10): bool
 
 export function validateFileType(mimeType: string): boolean {
   const allowedTypes = [
-    "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ];
   return allowedTypes.includes(mimeType);

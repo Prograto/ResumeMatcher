@@ -37,7 +37,6 @@ export function FileUpload({ onFileSelect, selectedFile, isUploading, error }: F
 
   const handleFileSelect = (file: File) => {
     const allowedTypes = [
-      "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ];
     
@@ -99,13 +98,13 @@ export function FileUpload({ onFileSelect, selectedFile, isUploading, error }: F
             <p className="text-sm text-gray-500 mb-4">
               {isUploading ? "Please wait..." : "or click to browse files"}
             </p>
-            <p className="text-xs text-gray-400">Supports PDF, DOCX (Max 10MB)</p>
+            <p className="text-xs text-gray-400">Supports DOCX files (Max 10MB) • PDF support coming soon</p>
             
             <input
               ref={fileInputRef}
               type="file"
               className="hidden"
-              accept=".pdf,.docx"
+              accept=".docx"
               onChange={handleInputChange}
               disabled={isUploading}
             />
