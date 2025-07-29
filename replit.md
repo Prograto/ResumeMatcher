@@ -112,3 +112,11 @@ The application now features three main sections accessible through a navigation
 3. **ATS Scanner**: Comprehensive resume analysis with keyword matching and improvement recommendations
 
 All features are fully functional with DOCX file support and Google Gemini AI integration providing well-formatted outputs.
+
+## VS Code Setup
+
+The application is ready for local development in VS Code with:
+- Complete setup documentation in README.md
+- Environment variable template (.env.example)
+- VS Code workspace settings and extension recommendations
+- Development scripts for running locally with `npm run dev`
