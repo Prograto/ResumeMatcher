@@ -60,9 +60,22 @@ export function CoverLetters() {
       });
     },
     onError: (error) => {
+      let message = error.message;
+      // Try to parse backend error for user-friendly message
+      try {
+        const match = message.match(/\{.*\}/);
+        if (match) {
+          const errObj = JSON.parse(match[0]);
+          if (errObj.error && errObj.error.code === 503) {
+            message = "The AI service is overloaded. Please try again in a few minutes.";
+          } else if (errObj.message) {
+            message = errObj.message;
+          }
+        }
+      } catch {}
       toast({
         title: "Generation failed",
-        description: error.message,
+        description: message,
         variant: "destructive",
       });
     },

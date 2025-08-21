@@ -76,6 +76,7 @@ Respond with JSON in this exact format:
     });
 
     const rawJson = response.text;
+    console.log('Gemini ATS raw response:', rawJson);
     if (!rawJson) {
       throw new Error("Empty response from Gemini API");
     }
@@ -93,7 +94,9 @@ export async function optimizeResume(
   companyName: string, 
   roleTitle: string
 ): Promise<string> {
-  try {
+  let lastError;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
     const systemPrompt = `You are an expert resume optimization specialist. Create an optimized version of the provided resume that:
 1. Strategically incorporates relevant keywords from the job description
 2. Highlights relevant experience and skills with quantifiable achievements
@@ -134,7 +137,7 @@ ${originalResumeText}
 
 Please optimize this resume for the above position with professional formatting and clear sections.`;
 
-    const response = await ai.models.generateContent({
+      const response = await ai.models.generateContent({
       model: "gemini-2.5-pro",
       contents: [
         {
@@ -147,16 +150,27 @@ Please optimize this resume for the above position with professional formatting 
       }
     });
 
-    const optimizedResume = response.text;
-    if (!optimizedResume) {
-      throw new Error("Empty response from Gemini API");
+      const optimizedResume = response.text;
+      if (!optimizedResume) {
+        throw new Error("Empty response from Gemini API");
+      }
+      return optimizedResume;
+    } catch (error) {
+      lastError = error;
+      // Retry on 503 (model overloaded)
+      if (error && typeof error === 'object' && 'message' in error && String(error.message).includes('503')) {
+        if (attempt < 2) {
+          await new Promise(res => setTimeout(res, 2000)); // wait 2 seconds
+          continue;
+        }
+        throw new Error('The AI service is overloaded. Please try again in a few minutes.');
+      }
+      // Other errors: do not retry
+      break;
     }
-
-    return optimizedResume;
-  } catch (error) {
-    console.error("Resume optimization error:", error);
-    throw new Error(`Failed to optimize resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
+  console.error("Resume optimization error:", lastError);
+  throw new Error(`Failed to optimize resume: ${lastError instanceof Error ? lastError.message : 'Unknown error'}`);
 }
 
 export async function generateCoverLetter(
@@ -165,7 +179,9 @@ export async function generateCoverLetter(
   companyName: string,
   roleTitle: string
 ): Promise<string> {
-  try {
+  let lastError;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
     const systemPrompt = `You are an expert cover letter writer. Create a personalized, professional cover letter that:
 1. Shows genuine interest in the company and role
 2. Connects the candidate's experience to job requirements
@@ -193,7 +209,7 @@ ${resumeText}
 
 Please write a compelling, well-formatted cover letter for this application.`;
 
-    const response = await ai.models.generateContent({
+      const response = await ai.models.generateContent({
       model: "gemini-2.5-pro",
       contents: [
         {
@@ -206,14 +222,25 @@ Please write a compelling, well-formatted cover letter for this application.`;
       }
     });
 
-    const coverLetter = response.text;
-    if (!coverLetter) {
-      throw new Error("Empty response from Gemini API");
+      const coverLetter = response.text;
+      if (!coverLetter) {
+        throw new Error("Empty response from Gemini API");
+      }
+      return coverLetter;
+    } catch (error) {
+      lastError = error;
+      // Retry on 503 (model overloaded)
+      if (error && typeof error === 'object' && 'message' in error && String(error.message).includes('503')) {
+        if (attempt < 2) {
+          await new Promise(res => setTimeout(res, 2000)); // wait 2 seconds
+          continue;
+        }
+        throw new Error('The AI service is overloaded. Please try again in a few minutes.');
+      }
+      // Other errors: do not retry
+      break;
     }
-
-    return coverLetter;
-  } catch (error) {
-    console.error("Cover letter generation error:", error);
-    throw new Error(`Failed to generate cover letter: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
+  console.error("Cover letter generation error:", lastError);
+  throw new Error(`Failed to generate cover letter: ${lastError instanceof Error ? lastError.message : 'Unknown error'}`);
 }
